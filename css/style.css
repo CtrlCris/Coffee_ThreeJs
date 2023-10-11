@@ -6,7 +6,6 @@
 }
 
 body {
-
     background: linear-gradient(180deg, #FCB705 0%, rgba(113, 192, 237, 0.51) 48.96%, rgba(26, 64, 85, 0.93) 100%);
     position: relative;
     height: 100vh;
@@ -19,6 +18,7 @@ body {
     top: 0;
     left: 0;
     outline: none;
+    width: 100%;
 }
 
 
@@ -67,11 +67,14 @@ body {
 
 .overlay h1 {
     color: #fff;
-    font-size: 82px;
+    font-size: 5em;
     line-height: 140%;
     letter-spacing: 7px;
     position: relative;
-    overflow: hidden;
-    height: 168px;
-    width: 530px;
+}
+
+@media (max-width: 768px) {
+    .overlay h1 {
+        font-size: 3em;
+    }
 }

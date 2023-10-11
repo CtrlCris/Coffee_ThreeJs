@@ -1,8 +1,14 @@
 /**
+ * Sizes
+ */
+const sizes = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
+
+/**
  * Loaders
  */
-
-const overlay = document.querySelector(".overlay");
 const loadingManager = new THREE.LoadingManager(
   () => {
     window.setTimeout(() => {
@@ -11,15 +17,15 @@ const loadingManager = new THREE.LoadingManager(
         y: "-100%",
       });
 
-      gsap.to(overlay, {
-        duration: 2,
+      gsap.to(".overlay", {
+        duration: 1,
         opacity: 0,
         delay: 1,
       });
-      gsap.to(overlay, {
+      gsap.to(".overlay", {
         duration: 1,
         display: "none",
-        delay: 2,
+        delay: 1,
       });
     }, 2000);
   },
@@ -40,22 +46,10 @@ const scene = new THREE.Scene();
 /**
  * GLTF Model
  */
-let skull = null;
 let base = new THREE.Object3D();
 scene.add(base);
 const gltfLoader = new THREE.GLTFLoader(loadingManager);
-gltfLoader.load("./assets/COFFEE.glb", (gltf) => {
-  // gltf.scene.position.y = 0.5
-  base.add(gltf.scene);
-});
-
-/**
- * Sizes
- */
-const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
+gltfLoader.load("./assets/COFFEE.glb", (gltf) => base.add(gltf.scene));
 
 /**
  * Camera
@@ -80,7 +74,16 @@ var plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -2);
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var pointOfIntersection = new THREE.Vector3();
-canvas.addEventListener("mousemove", onMouseMove, false);
+canvas.addEventListener(
+  "touchmove",
+  (e) => animate(e.touches[0].clientX, e.touches[0].clientY),
+  false
+);
+canvas.addEventListener(
+  "mousemove",
+  (e) => animate(e.clientX, e.clientY),
+  false
+);
 
 const cursor = document.querySelector(".cursor");
 const cursorBorder = document.querySelector(".cursor-border");
@@ -88,9 +91,9 @@ const cursorBorder = document.querySelector(".cursor-border");
 const cursorPos = new THREE.Vector2();
 const cursorBorderPos = new THREE.Vector2();
 
-function onMouseMove(e) {
-  cursorPos.x = e.clientX;
-  cursorPos.y = e.clientY;
+function animate(x, y) {
+  cursorPos.x = x;
+  cursorPos.y = y;
 
   mouse.x = (cursorPos.x / sizes.width) * 2 - 1;
   mouse.y = -(cursorPos.y / sizes.height) * 2 + 1;
@@ -102,14 +105,13 @@ function onMouseMove(e) {
   raycaster.ray.intersectPlane(plane, pointOfIntersection);
   base.lookAt(pointOfIntersection);
 
-  cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+  cursor.style.transform = `translate(${x}px, ${y}px)`;
   cursor.style.opacity = 1;
   cursor.style.visibility = "visible";
 
   cursorBorder.style.opacity = 1;
   cursorBorder.style.visibility = "visible";
 }
-
 /**
  * Renderer
  */
